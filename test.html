@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Title</title>
+    <style>
+        body {
+            background: red;
+        }
+        .container{
+            width:322px;
+            margin:auto;
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin-top: 40px;
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+            /*background: coral;*/
+            display: inline-block;
+        }
+        .box:first-child{
+            background: red;
+        }
+        .box:nth-child(2){
+            background: yellow;
+        }
+        .box:last-child {
+            background: pink;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="box1" class="box" data-color="red"></div>
+    <div class="box" data-color="yellow"></div>
+    <div class="box" data-color="pink"></div>
+</div>
+<script src="js/jquery-1.11.3.min.js"></script>
+<script>
+
+
+    $(function () {
+        var index = 0;
+        var timer = setInterval(function ()  {
+            var color = $('.box').eq(index).data('color');
+            console.log(color);
+            $('body').css({
+                background: color
+            });
+            index = (index+1)% $('.box').size();
+
+        },10);
+        $('.box').click(function(index){
+//            alert($(this).index);
+//            console.log(index);
+//            console.log($(this).index);
+            clearInterval(timer);
+            var color = $(this).data('color');
+            console.log(color);
+            $('body').css({
+                background: color
+
+            });
+        });
+    })
+</script>
+</body>
+</html>

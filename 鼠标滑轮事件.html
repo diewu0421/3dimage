@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>鼠标滑轮事件</title>
+    <style>
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+    </div>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+        /*在非firefox浏览器中，滚轮向上滚动返回的数值是120，向下滚动返回-120
+         而在firefox浏览器中，滚轮向上滚动返回的数值是-3，向下滚动返回3
+         代码部分如下，e.wheelDelta是判断是否为非firefox浏览器，e.detail为firefox浏览器*/
+        var callback = function (event) {
+            var e = event || window.event;
+            if (e.wheelDelta){
+                //非火狐浏览器 向上滚动为120 ，向下为-120
+                console.log(e.wheelDelta);
+            }else {
+                //火狐浏览器 向上滚动为-3 ，向下为3
+                console.log(e.detail);
+            }
+        };
+        if (document.addEventListener){
+            document.addEventListener('DOMMouseScroll',callback,false);
+        }
+        window.onmousewheel = document.onmousewheel = callback;
+
+    </script>
+</body>
+</html>

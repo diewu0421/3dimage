@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en"  ondragstart="return false;">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            font-size: 0;
+            background: #4d4d4d;
+
+        }
+
+        img {
+            /*display: block;*/
+            /*border: 0;*/
+        }
+
+        .img-box {
+            cursor: move;
+            width: 133px;
+            height: 220px;
+            background: url(img/center.jpg);
+            background-size: cover;
+            margin: 120px auto;
+            position: relative;
+            border-radius: 5px;
+            box-shadow: 0 0 20px #ddd;
+            transform: perspective(800px) rotateX(-15deg) rotateY(20deg);
+            transform-style: preserve-3d;
+        }
+
+        .img-box img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 5px;
+            box-shadow: 0 0 20px #ddd;
+        }
+
+        /*.img-box img:first-child {*/
+        /*transform: translateZ(250px) rotateY(20deg);*/
+        /*}*/
+    </style>
+</head>
+<body>
+<div class="img-box" id="img-box" >
+    <img src="img/1.jpg" height="200" width="133" alt="">
+    <img src="img/2.jpg" height="200" width="133" alt="">
+    <img src="img/3.jpg" height="200" width="133" alt="">
+    <img src="img/4.jpg" height="200" width="133" alt="">
+    <img src="img/5.jpg" height="200" width="133" alt="">
+    <img src="img/6.jpg" height="200" width="133" alt="">
+    <img src="img/7.jpg" height="200" width="133" alt="">
+    <img src="img/8.jpg" height="200" width="133" alt="">
+    <img src="img/9.jpg" height="200" width="133" alt="">
+    <img src="img/10.jpg" height="200" width="133" alt="">
+    <img src="img/11.jpg" height="200" width="133" alt="">
+</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    //    $(function () {
+    //        // 获取图片数量
+    //        var imgL = $('#img-box img').size();
+    //        // 没一张图片占用的角度
+    //        var deg = 360 / imgL;
+    //        // 遍历初始化每一张图片的位置
+    //        for (var i = imgL; i >= 0; i--) {
+    //            $('#img-box img').eq(i).css({
+    //                // 设定没一张图片不一样的过渡时候达到逐个出现的效果
+    //                transition: "all 1s " + (imgL - i) * 0.15 + "s ease",
+    //                // 设定没一张图片的位置
+    //                transform: 'rotateY(' + (i * deg) + 'deg) translateZ(300px)'
+    //                //禁用图片拖动
+    //            }).attr('ondragstart', 'return false');
+    //        }
+    //        ;
+    //    });
+
+    //原生js的写法
+
+    function $(id) {
+        return document.getElementById(id);
+    }
+    var imgBox = $('img-box');
+    var imgs = imgBox.getElementsByTagName('img');
+    var deg = 360 / imgs.length;
+    var sumTime = 0;
+    var canRotate = true;
+    var xDegreen = -15;
+    var degreen = 20;
+    var perspective = 800;
+    for (var i = imgs.length - 1; i >= 0; i--) {
+        //'all ' + (1 + imgs.length - i) * 0.15 +'s ease'
+        //'rotateY('+i*deg+'deg) translateZ(300px)'
+        //注意下面的1s 要放在前面
+        var time = (imgs.length - i) * 0.15;
+        sumTime += time;
+        imgs[i].style.transition = 'all 1s ' + (time) + 's ease';
+        imgs[i].style.transform = 'rotateY(' + (i * deg) + 'deg) translateZ(300px)';
+        imgs[i].onSelect = "return false;";
+
+    }
+
+    //延迟启动img-box的旋转
+    setTimeout(function () {
+
+        var _run = function () {
+            degreen++;
+            imgBox.style.transform = ' perspective(' + perspective + 'px) rotateX(' + xDegreen + 'deg) rotateY(' + degreen + 'deg)';
+            if (canRotate) requestAnimationFrame(_run);
+        };
+        _run();
+    }, (imgs.length) * 0.15 * 1000 + 1000);
+
+    var isUp = true;
+    var lastX = lastY = nowX = nowY = 0;
+    document.onmousedown = function (event) {
+        canRotate = false;
+        isUp = false;
+        var e = event || window.event;
+        lastX = e.clientX;
+        lastY = e.clientY;
+
+    };
+    document.onmousemove = function (event) {
+        if (!isUp) {
+            var e = event || window.event;
+            var x = e.clientX - lastX;
+            var y = e.clientY - lastY;
+            console.log(x, y);
+            nowY += x * 0.2;
+            nowX -= y * 0.1;
+//            xDegreen += nowX;
+//            degreen += nowY;
+            console.log(nowX, nowY);
+            imgBox.style.transform = 'perspective(' + perspective + 'px) rotateX(' + ( nowX - 30) + 'deg) rotateY(' + ( nowY + degreen) + 'deg)';
+            lastX = e.clientX;
+            lastY = e.clientY;
+        }
+    };
+    document.onmouseup = function (event) {
+        var e = event || window.event;
+        isUp = true;
+        console.log('当鼠标弹起的时候');
+    };
+
+    /**
+     * 鼠标滑动事件的监听
+     * @param event
+     */
+//    var mouseEventFun = function (event) {
+//        var e = event || window.event;
+//        if (event.wheelDelta) {
+//            // 非火狐浏览器 上 120 下-120
+//            console.log(event.wheelDelta);
+//            perspective += event.wheelDelta / 10;
+//            //perspective('+perspective+'px)
+//
+//        } else {
+//            //火狐浏览器 上 -3 下 3
+//            console.log(event.detail);
+//            perspective += -event.detail * 4;
+//        }
+//        console.log(perspective);
+//        imgBox.style.transform = 'translateZ(' + perspective + 'px) rotateX(' + ( nowX - 30) + 'deg) rotateY(' + ( nowY + degreen) + 'deg)';
+//    }
+//    if (document.addEventListener) {
+//        document.addEventListener('DOMMouseScroll', mouseEventFun, false);
+//    }
+//    window.onmousewheel = document.onmousewheel = mouseEventFun;
+
+
+</script>
+</body>
+</html>
